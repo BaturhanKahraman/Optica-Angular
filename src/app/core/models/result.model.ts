@@ -1,5 +1,5 @@
 export interface Result<T>{
     message:string;
-    Data:T;
+    data:T;
     success:boolean;
 }

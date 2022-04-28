@@ -8,19 +8,17 @@ export class ResponseInterceptorService implements HttpInterceptor {
 
   constructor(private snackBar: MatSnackBar) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log("response int");
-    
     return next.handle(req).pipe(
       catchError(this.handleError.bind(this))
     )
   }
   
   private handleError(errorRes:HttpErrorResponse){
-    let errorMessage = 'An unknown error occurred!';        
-    if (errorRes.error) {
-      errorMessage=errorRes.error;
-    }      
-    this.snackBar.open(errorMessage);
+    let errorMessage = 'Bir hata meydana geldi.';        
+    if (errorRes.error.message) {
+      errorMessage=errorRes.error.message;
+    }
+    this.snackBar.open(errorMessage,undefined,{duration:5000});
     return throwError(()=>new Error(errorMessage));
   }
 }

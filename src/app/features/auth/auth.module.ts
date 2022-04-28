@@ -5,6 +5,7 @@ import { RegisterComponent } from './register/register.component';
 import { AuthRoutingModule } from './auth-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CoreModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -15,7 +16,7 @@ import { CoreModule } from '@angular/flex-layout';
     RegisterComponent
   ],
   imports: [
-    AuthRoutingModule,SharedModule,CoreModule
+    AuthRoutingModule,SharedModule,FormsModule,ReactiveFormsModule
   ]
 })
 export class AuthModule { }

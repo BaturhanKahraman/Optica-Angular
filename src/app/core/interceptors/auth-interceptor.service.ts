@@ -9,8 +9,6 @@ export class AuthInterceptorService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const modifiedReq = req.clone({headers:req.headers.append('Auth','deneme')});
-    console.log("auth inters");
-
     return next.handle(modifiedReq);
   }
 }

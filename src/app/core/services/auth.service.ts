@@ -1,8 +1,7 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
+import { BehaviorSubject, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { LoginModel } from '../models/login.model';
 import { Result } from '../models/result.model';
@@ -14,17 +13,49 @@ interface TokenResult {
 }
 @Injectable()
 export class AuthService {
-  private url = environment.url;
+  private url = environment.url+'auth/';
+  public user = new BehaviorSubject<User|null>(null);
   constructor(private http: HttpClient, private router: Router) {
-    this.url += 'auth/';
+  }
+
+  autoLogin(){
+    const jwtToken =localStorage.getItem('userData');
+    if(!jwtToken)
+      return;
+    this.handleAuth(jwtToken);
+  }
+
+  isAuth(){
+    let user =this.user.getValue()
+    console.log(user);
+    
+    if(user)
+      return true;
+    return false;
   }
 
   login(model: LoginModel) {
     return this.http.post<Result<TokenResult>>(this.url + 'login', model).pipe(
       tap((x) => {
-        console.log(this.parseJwt(x.Data.token));
+        this.handleAuth(x.data.token);
+        localStorage.setItem("userData",x.data.token);
+        this.router.navigateByUrl("/");
       })
     );
+  }
+
+  handleAuth(token:string) {
+    let jwt = this.parseJwt(token);
+    let user = this.getUserFromJwt(jwt);
+    this.user.next(user);
+  }
+
+  getUserFromJwt(jwt:any){
+    return new User(
+      jwt["email"],
+      jwt["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
+      jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
+    )
   }
 
   parseJwt(token: string) {
