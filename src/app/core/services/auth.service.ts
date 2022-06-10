@@ -26,10 +26,7 @@ export class AuthService {
   }
 
   isAuth(){
-    let user =this.user.getValue()
-    console.log(user);
-    
-    if(user)
+    if(this.user.getValue())
       return true;
     return false;
   }
